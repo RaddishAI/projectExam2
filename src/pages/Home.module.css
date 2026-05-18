@@ -1,0 +1,17 @@
+.main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 4rem 1rem;
+  }
+  
+  .title {
+    color: #1e3a5f;
+    font-size: 2.5rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  
+  .text {
+    color: #6b7280;
+    font-size: 1.125rem;
+  }

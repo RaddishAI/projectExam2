@@ -1,0 +1,17 @@
+.header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 0;
+  }
+  
+  .inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .logo {
+    color: #1e3a5f;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
