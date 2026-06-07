@@ -1,10 +1,35 @@
+import { Link, useNavigate } from "react-router-dom";
+import { clearAuth, getUser } from "../utils/authStorage";
 import styles from "./Header.module.css";
 
 function Header() {
+  const navigate = useNavigate();
+  const user = getUser();
+
+  function handleLogout() {
+    clearAuth();
+    navigate("/");
+  }
+
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <h1 className={styles.logo}>Holidaze</h1>
+        <Link to="/" className={styles.logo}>
+          Holidaze
+        </Link>
+
+        <nav>
+          {user ? (
+            <button type="button" onClick={handleLogout}>
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
+            </>
+          )}
+        </nav>
       </div>
     </header>
   );
