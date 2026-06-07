@@ -1,10 +1,15 @@
-import { API_BASE_URL } from "./api";
+import { API_BASE_URL, API_KEY } from "./api";
 import type { LoginPayload, LoginResponse } from "../types/auth";
 import type { RegisterPayload, RegisterResponse } from "../types/register";
+import type {
+  UpdateAvatarPayload,
+  UpdateProfileResponse,
+} from "../types/profile";
 
 export const AUTH_ENDPOINTS = {
   login: `${API_BASE_URL}/auth/login`,
   register: `${API_BASE_URL}/auth/register`,
+  profiles: `${API_BASE_URL}/holidaze/profiles`,
 };
 
 /**
@@ -54,6 +59,39 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
 
   if (!response.ok) {
     throw new Error(data.errors?.[0]?.message ?? "Login failed");
+  }
+
+  return data;
+}
+
+/**
+ * Updates the avatar for the logged in user.
+ *
+ * @param name Profile name.
+ * @param payload Avatar data.
+ * @param accessToken User access token.
+ * @returns Updated user profile.
+ * @throws Error when avatar update fails.
+ */
+export async function updateAvatar(
+  name: string,
+  payload: UpdateAvatarPayload,
+  accessToken: string,
+): Promise<UpdateProfileResponse> {
+  const response = await fetch(`${AUTH_ENDPOINTS.profiles}/${name}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "X-Noroff-API-Key": API_KEY,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.errors?.[0]?.message ?? "Avatar update failed");
   }
 
   return data;
