@@ -19,11 +19,15 @@ function Header() {
         </Link>
 
         <nav>
-          {user ? (
-            <button type="button" onClick={handleLogout}>
-              Logout
-            </button>
-          ) : (
+        {user ? (
+  <>
+    <Link to="/profile">Profile</Link>
+
+    <button type="button" onClick={handleLogout}>
+      Logout
+    </button>
+  </>
+) : (
             <>
               <Link to="/login">Login</Link>
               <Link to="/register">Register</Link>
