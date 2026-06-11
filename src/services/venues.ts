@@ -32,3 +32,20 @@ export async function searchVenues(query: string): Promise<Venue[]> {
 
   return result.data;
 }
+
+/**
+ * Fetches a single venue by id.
+ */
+export async function getVenueById(id: string): Promise<Venue> {
+  const response = await fetch(
+    `${API_BASE_URL}/holidaze/venues/${id}`,
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch venue");
+  }
+
+  const result = await response.json();
+
+  return result.data;
+}
