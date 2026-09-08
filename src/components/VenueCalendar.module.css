@@ -71,3 +71,17 @@
   height: 1rem;
   border-radius: 2px;
 }
+
+.selected {
+  background-color: #b3d4fc;
+  font-weight: 700;
+  outline: 2px solid #2563eb;
+}
+
+.day:not(:disabled) {
+  cursor: pointer;
+}
+
+.day:disabled {
+  cursor: not-allowed;
+}
