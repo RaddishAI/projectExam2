@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getVenueById } from "../services/venues";
 import VenueCalendar from "../components/VenueCalendar";
+import BookingForm from "../components/BookingForm";
 import type { Venue } from "../types/venue";
 import styles from "./VenueDetails.module.css";
 
 function VenueDetails() {
   const { id } = useParams();
+
   const [venue, setVenue] = useState<Venue | null>(null);
   const [loading, setLoading] = useState(true);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!id) {
@@ -27,7 +32,21 @@ function VenueDetails() {
     }
 
     loadVenue();
-  }, [id]);
+  }, [id, refreshKey]);
+
+  function handleDateSelect(date: string) {
+    if (!dateFrom || dateTo || date <= dateFrom) {
+      setDateFrom(date);
+      setDateTo("");
+      return;
+    }
+
+    setDateTo(date);
+  }
+
+  function handleBookingCreated() {
+    setRefreshKey((current) => current + 1);
+  }
 
   if (!id) {
     return (
@@ -71,7 +90,22 @@ function VenueDetails() {
       <p>Price: ${venue.price}</p>
       <p>Guests: {venue.maxGuests}</p>
 
-      <VenueCalendar bookings={venue.bookings} />
+      <VenueCalendar
+        bookings={venue.bookings}
+        selectedDateFrom={dateFrom}
+        selectedDateTo={dateTo}
+        onDateSelect={handleDateSelect}
+      />
+
+      <BookingForm
+        venueId={venue.id}
+        maxGuests={venue.maxGuests}
+        dateFrom={dateFrom}
+        dateTo={dateTo}
+        onDateFromChange={setDateFrom}
+        onDateToChange={setDateTo}
+        onBookingCreated={handleBookingCreated}
+      />
     </main>
   );
 }

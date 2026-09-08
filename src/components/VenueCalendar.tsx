@@ -4,9 +4,17 @@ import styles from "./VenueCalendar.module.css";
 
 type VenueCalendarProps = {
   bookings?: VenueBooking[];
+  selectedDateFrom?: string;
+  selectedDateTo?: string;
+  onDateSelect?: (date: string) => void;
 };
 
-function VenueCalendar({ bookings = [] }: VenueCalendarProps) {
+function VenueCalendar({
+  bookings = [],
+  selectedDateFrom,
+  selectedDateTo,
+  onDateSelect,
+}: VenueCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const year = currentDate.getFullYear();
@@ -17,6 +25,14 @@ function VenueCalendar({ bookings = [] }: VenueCalendarProps) {
 
   const daysInMonth = lastDayOfMonth.getDate();
   const startDay = (firstDayOfMonth.getDay() + 6) % 7;
+
+  function formatDate(date: Date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
 
   function isDateBooked(date: Date) {
     return bookings.some((booking) => {
@@ -29,6 +45,24 @@ function VenueCalendar({ bookings = [] }: VenueCalendarProps) {
 
       return date >= dateFrom && date <= dateTo;
     });
+  }
+
+  function isDateSelected(date: Date) {
+    const formattedDate = formatDate(date);
+
+    if (selectedDateFrom && formattedDate === selectedDateFrom) {
+      return true;
+    }
+
+    if (selectedDateTo && formattedDate === selectedDateTo) {
+      return true;
+    }
+
+    if (selectedDateFrom && selectedDateTo) {
+      return formattedDate > selectedDateFrom && formattedDate < selectedDateTo;
+    }
+
+    return false;
   }
 
   function handlePreviousMonth() {
@@ -48,14 +82,21 @@ function VenueCalendar({ bookings = [] }: VenueCalendarProps) {
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month, day);
     const booked = isDateBooked(date);
+    const selected = isDateSelected(date);
+    const formattedDate = formatDate(date);
 
     calendarDays.push(
-      <div
+      <button
         key={day}
-        className={`${styles.day} ${booked ? styles.booked : styles.available}`}
+        type="button"
+        disabled={booked}
+        onClick={() => onDateSelect?.(formattedDate)}
+        className={`${styles.day} ${
+          booked ? styles.booked : styles.available
+        } ${selected ? styles.selected : ""}`}
       >
         {day}
-      </div>,
+      </button>,
     );
   }
 
