@@ -34,11 +34,11 @@ export async function searchVenues(query: string): Promise<Venue[]> {
 }
 
 /**
- * Fetches a single venue by id.
+ * Fetches a single venue by id, including bookings.
  */
 export async function getVenueById(id: string): Promise<Venue> {
   const response = await fetch(
-    `${API_BASE_URL}/holidaze/venues/${id}`,
+    `${API_BASE_URL}/holidaze/venues/${id}?_bookings=true`,
   );
 
   if (!response.ok) {

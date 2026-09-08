@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getVenueById } from "../services/venues";
+import VenueCalendar from "../components/VenueCalendar";
 import type { Venue } from "../types/venue";
 import styles from "./VenueDetails.module.css";
 
@@ -28,6 +29,14 @@ function VenueDetails() {
     loadVenue();
   }, [id]);
 
+  if (!id) {
+    return (
+      <main>
+        <p>Venue not found.</p>
+      </main>
+    );
+  }
+
   if (loading) {
     return (
       <main>
@@ -45,10 +54,10 @@ function VenueDetails() {
   }
 
   return (
-      <main>
-        <Link to="/">← Back to venues</Link>
-    
-        <h1>{venue.name}</h1>
+    <main>
+      <Link to="/">← Back to venues</Link>
+
+      <h1>{venue.name}</h1>
 
       {venue.media.length > 0 && (
         <img
@@ -61,6 +70,8 @@ function VenueDetails() {
       <p>{venue.description}</p>
       <p>Price: ${venue.price}</p>
       <p>Guests: {venue.maxGuests}</p>
+
+      <VenueCalendar bookings={venue.bookings} />
     </main>
   );
 }
