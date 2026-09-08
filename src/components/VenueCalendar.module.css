@@ -1,0 +1,73 @@
+.calendarSection {
+  margin-top: 2rem;
+  max-width: 500px;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.calendarHeader h3 {
+  margin: 0;
+}
+
+.calendarHeader button {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+}
+
+.weekdays,
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.weekdays {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.day,
+.emptyDay {
+  aspect-ratio: 1;
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.available {
+  background-color: #e8f5e9;
+}
+
+.booked {
+  background-color: #f3d6d6;
+  text-decoration: line-through;
+}
+
+.legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.legend > span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legendBox {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 2px;
+}
