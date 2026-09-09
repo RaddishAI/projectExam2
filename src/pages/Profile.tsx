@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { SubmitEvent } from "react";
 import { updateAvatar } from "../services/auth";
+import { getProfileBookings, type Booking } from "../services/bookings";
 import { getAccessToken, getUser, saveAuth } from "../utils/authStorage";
 
 /**
@@ -11,21 +12,54 @@ function Profile() {
 
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar?.url ?? "");
   const [avatarAlt, setAvatarAlt] = useState(user?.avatar?.alt ?? "");
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookingsLoading, setBookingsLoading] = useState(true);
+  const [bookingsError, setBookingsError] = useState("");
+
+  useEffect(() => {
+    async function loadBookings() {
+      if (!user) {
+        setBookingsLoading(false);
+        return;
+      }
+
+      const accessToken = getAccessToken();
+
+      if (!accessToken) {
+        setBookingsError("You must be logged in to view your bookings.");
+        setBookingsLoading(false);
+        return;
+      }
+
+      try {
+        const result = await getProfileBookings(user.name, accessToken);
+        setBookings(result);
+      } catch (error) {
+        setBookingsError(
+          error instanceof Error ? error.message : "Failed to load bookings",
+        );
+      } finally {
+        setBookingsLoading(false);
+      }
+    }
+
+    loadBookings();
+  }, [user]);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-  
+
     if (!user) {
       return;
     }
-  
+
     const accessToken = getAccessToken();
-  
+
     if (!accessToken) {
       alert("You must be logged in to update your avatar.");
       return;
     }
-  
+
     try {
       const response = await updateAvatar(
         user.name,
@@ -37,7 +71,7 @@ function Profile() {
         },
         accessToken,
       );
-  
+
       saveAuth(accessToken, response.data);
       alert("Avatar updated successfully!");
     } catch (error) {
@@ -53,6 +87,14 @@ function Profile() {
       </main>
     );
   }
+
+  const now = new Date();
+
+  const upcomingBookings = bookings
+    .filter((booking) => new Date(booking.dateTo) >= now)
+    .sort(
+      (a, b) => new Date(a.dateFrom).getTime() - new Date(b.dateFrom).getTime(),
+    );
 
   return (
     <main>
@@ -98,6 +140,40 @@ function Profile() {
       </form>
 
       {user.bio && <p>Bio: {user.bio}</p>}
+
+      <section>
+        <h3>Upcoming Bookings</h3>
+
+        {bookingsLoading && <p>Loading bookings...</p>}
+
+        {bookingsError && <p>{bookingsError}</p>}
+
+        {!bookingsLoading &&
+          !bookingsError &&
+          upcomingBookings.length === 0 && (
+            <p>You have no upcoming bookings.</p>
+          )}
+
+        {!bookingsLoading &&
+          !bookingsError &&
+          upcomingBookings.map((booking) => (
+            <article key={booking.id}>
+              <h4>{booking.venue.name}</h4>
+
+              {booking.venue.media[0] && (
+                <img
+                  src={booking.venue.media[0].url}
+                  alt={booking.venue.media[0].alt || booking.venue.name}
+                  width="240"
+                />
+              )}
+
+              <p>Check-in: {new Date(booking.dateFrom).toLocaleDateString()}</p>
+              <p>Check-out: {new Date(booking.dateTo).toLocaleDateString()}</p>
+              <p>Guests: {booking.guests}</p>
+            </article>
+          ))}
+      </section>
     </main>
   );
 }
