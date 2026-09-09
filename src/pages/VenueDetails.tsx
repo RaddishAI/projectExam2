@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getVenueById } from "../services/venues";
+import { getUser } from "../utils/authStorage";
 import VenueCalendar from "../components/VenueCalendar";
 import BookingForm from "../components/BookingForm";
 import type { Venue } from "../types/venue";
@@ -8,6 +9,7 @@ import styles from "./VenueDetails.module.css";
 
 function VenueDetails() {
   const { id } = useParams();
+  const user = getUser();
 
   const [venue, setVenue] = useState<Venue | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,11 +74,20 @@ function VenueDetails() {
     );
   }
 
+  const canEdit =
+    user?.venueManager === true && venue.owner?.name === user.name;
+
   return (
     <main>
       <Link to="/">← Back to venues</Link>
 
       <h1>{venue.name}</h1>
+
+      {canEdit && (
+        <p>
+          <Link to={`/venues/${venue.id}/edit`}>Edit Venue</Link>
+        </p>
+      )}
 
       {venue.media.length > 0 && (
         <img

@@ -38,7 +38,7 @@ export async function searchVenues(query: string): Promise<Venue[]> {
  */
 export async function getVenueById(id: string): Promise<Venue> {
   const response = await fetch(
-    `${API_BASE_URL}/holidaze/venues/${id}?_bookings=true`,
+    `${API_BASE_URL}/holidaze/venues/${id}?_bookings=true&_owner=true`,
   );
 
   if (!response.ok) {
@@ -71,6 +71,33 @@ export async function createVenue(
 
   if (!response.ok) {
     throw new Error(data.errors?.[0]?.message ?? "Failed to create venue");
+  }
+
+  return data.data;
+}
+
+/**
+ * Updates an existing venue.
+ */
+export async function updateVenue(
+  id: string,
+  payload: CreateVenuePayload,
+  accessToken: string,
+): Promise<Venue> {
+  const response = await fetch(`${API_BASE_URL}/holidaze/venues/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "X-Noroff-API-Key": API_KEY,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.errors?.[0]?.message ?? "Failed to update venue");
   }
 
   return data.data;

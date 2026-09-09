@@ -29,6 +29,11 @@ export type VenueBooking = {
   updated: string;
 };
 
+export type VenueOwner = {
+  name: string;
+  email: string;
+};
+
 export type Venue = {
   id: string;
   name: string;
@@ -42,6 +47,7 @@ export type Venue = {
   meta: VenueMeta;
   location: VenueLocation;
   bookings?: VenueBooking[];
+  owner?: VenueOwner;
 };
 
 export type VenuesResponse = {

@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import VenueDetails from "./pages/VenueDetails";
 import CreateVenue from "./pages/CreateVenue";
+import EditVenue from "./pages/EditVenue";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/venues/:id" element={<VenueDetails />} />
+        <Route path="/venues/:id/edit" element={<EditVenue />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
