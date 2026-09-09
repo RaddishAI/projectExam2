@@ -7,7 +7,7 @@ import type {
 } from "../types/profile";
 
 export const AUTH_ENDPOINTS = {
-  login: `${API_BASE_URL}/auth/login`,
+  login: `${API_BASE_URL}/auth/login?_holidaze=true`,
   register: `${API_BASE_URL}/auth/register`,
   profiles: `${API_BASE_URL}/holidaze/profiles`,
 };
