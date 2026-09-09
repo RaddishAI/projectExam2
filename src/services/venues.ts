@@ -34,7 +34,7 @@ export async function searchVenues(query: string): Promise<Venue[]> {
 }
 
 /**
- * Fetches a single venue by id, including bookings.
+ * Fetches a single venue by id, including bookings and owner.
  */
 export async function getVenueById(id: string): Promise<Venue> {
   const response = await fetch(
@@ -101,4 +101,33 @@ export async function updateVenue(
   }
 
   return data.data;
+}
+
+/**
+ * Deletes an existing venue.
+ */
+export async function deleteVenue(
+  id: string,
+  accessToken: string,
+): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/holidaze/venues/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "X-Noroff-API-Key": API_KEY,
+    },
+  });
+
+  if (!response.ok) {
+    let message = "Failed to delete venue";
+
+    try {
+      const data = await response.json();
+      message = data.errors?.[0]?.message ?? message;
+    } catch {
+      // Some DELETE responses may not contain JSON.
+    }
+
+    throw new Error(message);
+  }
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { SubmitEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getVenueById, updateVenue } from "../services/venues";
+import { deleteVenue, getVenueById, updateVenue } from "../services/venues";
 import { getAccessToken, getUser } from "../utils/authStorage";
 import type { Venue } from "../types/venue";
 
@@ -13,6 +13,7 @@ function EditVenue() {
   const [venue, setVenue] = useState<Venue | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -129,12 +130,52 @@ function EditVenue() {
         accessToken,
       );
 
-      setMessage("Venue updated successfully!");
       navigate(`/venues/${id}`);
     } catch (error) {
       setMessage(
         error instanceof Error ? error.message : "Failed to update venue",
       );
+    }
+  }
+
+  async function handleDelete() {
+    if (!id || !user || !venue) {
+      return;
+    }
+
+    if (!user.venueManager || venue.owner?.name !== user.name) {
+      setMessage("You can only delete venues that you own.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${venue.name}"? This cannot be undone.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const accessToken = getAccessToken();
+
+    if (!accessToken) {
+      setMessage("You must be logged in to delete a venue.");
+      return;
+    }
+
+    try {
+      setDeleting(true);
+      setMessage("");
+
+      await deleteVenue(id, accessToken);
+
+      navigate("/");
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "Failed to delete venue",
+      );
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -356,6 +397,15 @@ function EditVenue() {
 
         <button type="submit">Update Venue</button>
       </form>
+
+      <hr />
+
+      <h3>Delete Venue</h3>
+      <p>This action cannot be undone.</p>
+
+      <button type="button" onClick={handleDelete} disabled={deleting}>
+        {deleting ? "Deleting..." : "Delete Venue"}
+      </button>
 
       {message && <p>{message}</p>}
     </main>
