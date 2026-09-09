@@ -1,5 +1,5 @@
-import { API_BASE_URL } from "./api";
-import type { Venue, VenuesResponse } from "../types/venue";
+import { API_BASE_URL, API_KEY } from "./api";
+import type { CreateVenuePayload, Venue, VenuesResponse } from "../types/venue";
 
 /**
  * Fetches all venues from the Holidaze API.
@@ -48,4 +48,30 @@ export async function getVenueById(id: string): Promise<Venue> {
   const result = await response.json();
 
   return result.data;
+}
+
+/**
+ * Creates a new venue.
+ */
+export async function createVenue(
+  payload: CreateVenuePayload,
+  accessToken: string,
+): Promise<Venue> {
+  const response = await fetch(`${API_BASE_URL}/holidaze/venues`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+      "X-Noroff-API-Key": API_KEY,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.errors?.[0]?.message ?? "Failed to create venue");
+  }
+
+  return data.data;
 }

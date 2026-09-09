@@ -48,3 +48,13 @@ export type VenuesResponse = {
   data: Venue[];
   meta: Record<string, unknown>;
 };
+
+export type CreateVenuePayload = {
+  name: string;
+  description: string;
+  media: VenueMedia[];
+  price: number;
+  maxGuests: number;
+  meta: VenueMeta;
+  location: VenueLocation;
+};
