@@ -20,6 +20,11 @@ export type VenueLocation = {
   lng: number;
 };
 
+export type VenueBookingCustomer = {
+  name: string;
+  email: string;
+};
+
 export type VenueBooking = {
   id: string;
   dateFrom: string;
@@ -27,6 +32,7 @@ export type VenueBooking = {
   guests: number;
   created: string;
   updated: string;
+  customer?: VenueBookingCustomer;
 };
 
 export type VenueOwner = {

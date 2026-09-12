@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import type { SubmitEvent } from "react";
+import { Link } from "react-router-dom";
 import { updateAvatar } from "../services/auth";
 import { getProfileBookings, type Booking } from "../services/bookings";
+import { getProfileVenues } from "../services/venues";
+import type { Venue } from "../types/venue";
 import { getAccessToken, getUser, saveAuth } from "../utils/authStorage";
 
 /**
@@ -15,6 +18,9 @@ function Profile() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [bookingsLoading, setBookingsLoading] = useState(true);
   const [bookingsError, setBookingsError] = useState("");
+  const [managedVenues, setManagedVenues] = useState<Venue[]>([]);
+  const [managedVenuesLoading, setManagedVenuesLoading] = useState(false);
+  const [managedVenuesError, setManagedVenuesError] = useState("");
 
   useEffect(() => {
     async function loadBookings() {
@@ -44,7 +50,41 @@ function Profile() {
     }
 
     loadBookings();
-  }, [user]);
+  }, [user?.name]);
+
+  useEffect(() => {
+    async function loadManagedVenues() {
+      if (!user?.venueManager) {
+        return;
+      }
+
+      const accessToken = getAccessToken();
+
+      if (!accessToken) {
+        setManagedVenuesError(
+          "You must be logged in to view your managed venues.",
+        );
+        return;
+      }
+
+      setManagedVenuesLoading(true);
+
+      try {
+        const result = await getProfileVenues(user.name, accessToken);
+        setManagedVenues(result);
+      } catch (error) {
+        setManagedVenuesError(
+          error instanceof Error
+            ? error.message
+            : "Failed to load managed venues",
+        );
+      } finally {
+        setManagedVenuesLoading(false);
+      }
+    }
+
+    loadManagedVenues();
+  }, [user?.name, user?.venueManager]);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -174,6 +214,64 @@ function Profile() {
             </article>
           ))}
       </section>
+
+      {user.venueManager && (
+        <section>
+          <h3>Managed Venues</h3>
+
+          {managedVenuesLoading && <p>Loading managed venues...</p>}
+
+          {managedVenuesError && <p>{managedVenuesError}</p>}
+
+          {!managedVenuesLoading &&
+            !managedVenuesError &&
+            managedVenues.length === 0 && <p>You have no managed venues.</p>}
+
+          {!managedVenuesLoading &&
+            !managedVenuesError &&
+            managedVenues.map((venue) => (
+              <article key={venue.id}>
+                <h4>{venue.name}</h4>
+
+                <p>
+                  <Link to={`/venues/${venue.id}/edit`}>Edit Venue</Link>
+                </p>
+
+                {!venue.bookings || venue.bookings.length === 0 ? (
+                  <p>No bookings for this venue.</p>
+                ) : (
+                  venue.bookings
+                    .slice()
+                    .sort(
+                      (a, b) =>
+                        new Date(a.dateFrom).getTime() -
+                        new Date(b.dateFrom).getTime(),
+                    )
+                    .map((booking) => (
+                      <div key={booking.id}>
+                        {booking.customer && (
+                          <>
+                            <p>Customer: {booking.customer.name}</p>
+                            <p>Email: {booking.customer.email}</p>
+                          </>
+                        )}
+
+                        <p>
+                          Check-in:{" "}
+                          {new Date(booking.dateFrom).toLocaleDateString()}
+                        </p>
+                        <p>
+                          Check-out:{" "}
+                          {new Date(booking.dateTo).toLocaleDateString()}
+                        </p>
+                        <p>Guests: {booking.guests}</p>
+                      </div>
+                    ))
+                )}
+              </article>
+            ))}
+        </section>
+      )}
     </main>
   );
 }
