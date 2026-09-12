@@ -6,12 +6,15 @@ import { getProfileBookings, type Booking } from "../services/bookings";
 import { getProfileVenues } from "../services/venues";
 import type { Venue } from "../types/venue";
 import { getAccessToken, getUser, saveAuth } from "../utils/authStorage";
+import styles from "./Profile.module.css";
 
 /**
  * Profile page for the currently logged in user.
  */
 function Profile() {
   const user = getUser();
+  const userName = user?.name;
+  const isVenueManager = user?.venueManager;
 
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar?.url ?? "");
   const [avatarAlt, setAvatarAlt] = useState(user?.avatar?.alt ?? "");
@@ -24,7 +27,7 @@ function Profile() {
 
   useEffect(() => {
     async function loadBookings() {
-      if (!user) {
+      if (!userName) {
         setBookingsLoading(false);
         return;
       }
@@ -38,7 +41,7 @@ function Profile() {
       }
 
       try {
-        const result = await getProfileBookings(user.name, accessToken);
+        const result = await getProfileBookings(userName, accessToken);
         setBookings(result);
       } catch (error) {
         setBookingsError(
@@ -50,11 +53,11 @@ function Profile() {
     }
 
     loadBookings();
-  }, [user?.name]);
+  }, [userName]);
 
   useEffect(() => {
     async function loadManagedVenues() {
-      if (!user?.venueManager) {
+      if (!userName || !isVenueManager) {
         return;
       }
 
@@ -70,7 +73,7 @@ function Profile() {
       setManagedVenuesLoading(true);
 
       try {
-        const result = await getProfileVenues(user.name, accessToken);
+        const result = await getProfileVenues(userName, accessToken);
         setManagedVenues(result);
       } catch (error) {
         setManagedVenuesError(
@@ -84,7 +87,7 @@ function Profile() {
     }
 
     loadManagedVenues();
-  }, [user?.name, user?.venueManager]);
+  }, [userName, isVenueManager]);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -121,7 +124,7 @@ function Profile() {
 
   if (!user) {
     return (
-      <main>
+      <main className={styles.main}>
         <h2>Profile</h2>
         <p>You must be logged in to view this page.</p>
       </main>
@@ -137,7 +140,7 @@ function Profile() {
     );
 
   return (
-    <main>
+    <main className={styles.main}>
       <h2>Profile</h2>
 
       {user.avatar?.url && (

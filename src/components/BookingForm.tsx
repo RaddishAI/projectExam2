@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createBooking } from "../services/bookings";
 import { getAccessToken } from "../utils/authStorage";
+import styles from "./BookingForm.module.css";
 
 type BookingFormProps = {
   venueId: string;
@@ -73,7 +74,7 @@ function BookingForm({
   }
 
   return (
-    <section>
+    <section className={styles.bookingSection}>
       <h2>Book this venue</h2>
 
       <form onSubmit={handleSubmit}>

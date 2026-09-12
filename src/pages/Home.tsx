@@ -4,14 +4,18 @@ import type { Venue } from "../types/venue";
 import styles from "./Home.module.css";
 import VenueCard from "../components/VenueCard";
 
+const VENUES_PER_PAGE = 12;
+
 function Home() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [visibleVenues, setVisibleVenues] = useState(VENUES_PER_PAGE);
 
   useEffect(() => {
     async function loadVenues() {
       setLoading(true);
+      setVisibleVenues(VENUES_PER_PAGE);
 
       try {
         const data = search.trim()
@@ -29,6 +33,10 @@ function Home() {
     loadVenues();
   }, [search]);
 
+  function handleLoadMore() {
+    setVisibleVenues((current) => current + VENUES_PER_PAGE);
+  }
+
   return (
     <main className={styles.main}>
       <h2 className={styles.title}>Welcome to Holidaze</h2>
@@ -42,17 +50,25 @@ function Home() {
           placeholder="Search by name or description"
         />
       </label>
-      
+
       {loading ? (
         <p>Loading venues...</p>
       ) : venues.length === 0 ? (
         <p>No venues found.</p>
       ) : (
-        <div>
-          {venues.slice(0, 10).map((venue) => (
-            <VenueCard key={venue.id} venue={venue} />
-          ))}
-        </div>
+        <>
+          <div className={styles.venueGrid}>
+            {venues.slice(0, visibleVenues).map((venue) => (
+              <VenueCard key={venue.id} venue={venue} />
+            ))}
+          </div>
+
+          {visibleVenues < venues.length && (
+            <button type="button" onClick={handleLoadMore}>
+              Load more
+            </button>
+          )}
+        </>
       )}
     </main>
   );
