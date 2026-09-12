@@ -1,31 +1,35 @@
-.main {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 4rem 1rem;
+.bookingSection {
+  max-width: 500px;
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
 }
 
-.title {
+.bookingSection h2 {
   color: var(--color-primary);
-  font-size: 2.5rem;
-  line-height: 1.1;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.text {
-  color: var(--color-text-muted);
-  font-size: 1.125rem;
+.bookingSection form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.main label {
+.bookingSection form > div {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  max-width: 420px;
+}
+
+.bookingSection label {
   color: var(--color-text);
   font-weight: 600;
 }
 
-.main input[type="search"] {
+.bookingSection input {
   width: 100%;
   padding: 0.75rem 0.9rem;
   border: 1px solid var(--color-primary);
@@ -34,21 +38,13 @@
   color: var(--color-text);
 }
 
-.main input[type="search"]:focus {
+.bookingSection input:focus {
   outline: 2px solid var(--color-secondary);
   outline-offset: 1px;
   border-color: var(--color-secondary);
 }
 
-.venueGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-
-.main button {
-  margin-top: 2rem;
+.bookingSection button {
   padding: 0.8rem 1.25rem;
   border: 1px solid var(--color-primary);
   border-radius: 6px;
@@ -58,31 +54,23 @@
   cursor: pointer;
 }
 
-.main button:hover {
+.bookingSection button:hover:not(:disabled) {
   background: var(--color-hover);
   color: var(--color-primary);
 }
 
-@media (max-width: 900px) {
-  .venueGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.bookingSection button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 600px) {
-  .main {
-    padding: 2rem 1rem;
+  .bookingSection {
+    max-width: none;
+    padding: 1rem;
   }
 
-  .title {
-    font-size: 2rem;
-  }
-
-  .venueGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .main button {
+  .bookingSection button {
     width: 100%;
   }
 }

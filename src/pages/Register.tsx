@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { SubmitEvent } from "react";
 import { register } from "../services/auth";
+import styles from "./Register.module.css";
 
 /**
  * Registration page for new Holidaze users.
@@ -16,23 +17,23 @@ function Register() {
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-  
+
     try {
-        await register({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          venueManager: formData.venueManager,
-        });
-      
-        alert("Account created successfully!");
-      } catch (error) {
-        alert(error instanceof Error ? error.message : "Registration failed");
-      }
+      await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        venueManager: formData.venueManager,
+      });
+
+      alert("Account created successfully!");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Registration failed");
+    }
   }
 
   return (
-    <main>
+    <main className={styles.main}>
       <h2>Create account</h2>
 
       <form onSubmit={handleSubmit}>

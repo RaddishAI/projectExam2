@@ -6,6 +6,7 @@ import { getProfileBookings, type Booking } from "../services/bookings";
 import { getProfileVenues } from "../services/venues";
 import type { Venue } from "../types/venue";
 import { getAccessToken, getUser, saveAuth } from "../utils/authStorage";
+import styles from "./Profile.module.css";
 
 /**
  * Profile page for the currently logged in user.
@@ -121,7 +122,7 @@ function Profile() {
 
   if (!user) {
     return (
-      <main>
+      <main className={styles.main}>
         <h2>Profile</h2>
         <p>You must be logged in to view this page.</p>
       </main>
@@ -137,7 +138,7 @@ function Profile() {
     );
 
   return (
-    <main>
+    <main className={styles.main}>
       <h2>Profile</h2>
 
       {user.avatar?.url && (

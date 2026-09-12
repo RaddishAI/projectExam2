@@ -1,22 +1,42 @@
 .calendarSection {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   max-width: 500px;
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.calendarSection h2 {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
 }
 
 .calendarHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
 .calendarHeader h3 {
   margin: 0;
+  color: var(--color-text);
 }
 
 .calendarHeader button {
   padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: var(--color-surface);
   cursor: pointer;
+}
+
+.calendarHeader button:hover {
+  background: var(--color-hover);
+  color: var(--color-primary);
 }
 
 .weekdays,
@@ -30,6 +50,7 @@
   margin-bottom: 0.5rem;
   text-align: center;
   font-weight: 600;
+  color: var(--color-text-muted);
 }
 
 .day,
@@ -41,16 +62,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid transparent;
   border-radius: 4px;
+  font-weight: 500;
 }
 
 .available {
-  background-color: #e8f5e9;
+  background: var(--color-hover);
+  color: var(--color-primary);
+}
+
+.available:hover {
+  border-color: var(--color-secondary);
 }
 
 .booked {
-  background-color: #f3d6d6;
+  background: #f3d6d6;
+  color: var(--color-text-muted);
   text-decoration: line-through;
+}
+
+.selected {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-weight: 700;
+  outline: 2px solid var(--color-secondary);
+}
+
+.day:not(:disabled) {
+  cursor: pointer;
+}
+
+.day:disabled {
+  cursor: not-allowed;
 }
 
 .legend {
@@ -72,16 +116,23 @@
   border-radius: 2px;
 }
 
-.selected {
-  background-color: #b3d4fc;
-  font-weight: 700;
-  outline: 2px solid #2563eb;
-}
+@media (max-width: 600px) {
+  .calendarSection {
+    width: 100%;
+    padding: 1rem;
+  }
 
-.day:not(:disabled) {
-  cursor: pointer;
-}
+  .weekdays,
+  .calendarGrid {
+    gap: 0.125rem;
+  }
 
-.day:disabled {
-  cursor: not-allowed;
+  .calendarHeader button {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .legend {
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+  }
 }

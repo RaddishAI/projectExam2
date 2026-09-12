@@ -78,7 +78,7 @@ function VenueDetails() {
     user?.venueManager === true && venue.owner?.name === user.name;
 
   return (
-    <main>
+    <main className={styles.main}>
       <Link to="/">← Back to venues</Link>
 
       <h1>{venue.name}</h1>

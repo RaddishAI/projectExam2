@@ -3,6 +3,7 @@ import type { SubmitEvent } from "react";
 import { login } from "../services/auth";
 import { saveAuth } from "../utils/authStorage";
 import { useNavigate } from "react-router-dom";
+import styles from "./Login.module.css";
 
 /**
  * Login page for existing Holidaze users.
@@ -27,14 +28,13 @@ function Login() {
 
       saveAuth(accessToken, user);
       navigate("/");
-      
     } catch (error) {
       alert(error instanceof Error ? error.message : "Login failed");
     }
   }
 
   return (
-    <main>
+    <main className={styles.main}>
       <h2>Login</h2>
 
       <form onSubmit={handleSubmit}>

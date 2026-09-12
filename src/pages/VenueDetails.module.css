@@ -1,6 +1,50 @@
+.main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.main > a {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.main h1 {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.main p {
+  margin-top: 0.5rem;
+}
+
 .image {
-    width: 100%;
-    max-width: 700px;
-    height: 350px;
-    object-fit: cover;
+  width: 100%;
+  max-width: 700px;
+  height: 350px;
+  object-fit: cover;
+  display: block;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+
+.main > p a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 2rem 1rem;
   }
+
+  .main h1 {
+    font-size: 1.75rem;
+  }
+
+  .image {
+    height: 250px;
+  }
+}

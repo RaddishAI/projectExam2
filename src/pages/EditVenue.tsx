@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { deleteVenue, getVenueById, updateVenue } from "../services/venues";
 import { getAccessToken, getUser } from "../utils/authStorage";
 import type { Venue } from "../types/venue";
+import styles from "./CreateVenue.module.css";
 
 function EditVenue() {
   const { id } = useParams();
@@ -181,7 +182,7 @@ function EditVenue() {
 
   if (!user) {
     return (
-      <main>
+      <main className={styles.main}>
         <h2>Edit Venue</h2>
         <p>You must be logged in to view this page.</p>
       </main>
@@ -190,7 +191,7 @@ function EditVenue() {
 
   if (loading) {
     return (
-      <main>
+      <main className={styles.main}>
         <p>Loading venue...</p>
       </main>
     );
@@ -198,7 +199,7 @@ function EditVenue() {
 
   if (!venue) {
     return (
-      <main>
+      <main className={styles.main}>
         <p>Venue not found.</p>
       </main>
     );
@@ -206,7 +207,7 @@ function EditVenue() {
 
   if (!user.venueManager || venue.owner?.name !== user.name) {
     return (
-      <main>
+      <main className={styles.main}>
         <h2>Edit Venue</h2>
         <p>You can only edit venues that you own.</p>
       </main>
@@ -214,7 +215,7 @@ function EditVenue() {
   }
 
   return (
-    <main>
+    <main className={styles.main}>
       <h2>Edit Venue</h2>
 
       <form onSubmit={handleSubmit}>

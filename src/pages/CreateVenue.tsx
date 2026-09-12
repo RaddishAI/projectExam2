@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { SubmitEvent } from "react";
 import { createVenue } from "../services/venues";
 import { getAccessToken, getUser } from "../utils/authStorage";
+import styles from "./CreateVenue.module.css";
 
 function CreateVenue() {
   const user = getUser();
@@ -87,7 +88,7 @@ function CreateVenue() {
 
   if (!user) {
     return (
-      <main>
+      <main className={styles.main}>
         <h2>Create Venue</h2>
         <p>You must be logged in to view this page.</p>
       </main>
@@ -96,7 +97,7 @@ function CreateVenue() {
 
   if (!user.venueManager) {
     return (
-      <main>
+      <main className={styles.main}>
         <h2>Create Venue</h2>
         <p>Only venue managers can create venues.</p>
       </main>
@@ -104,7 +105,7 @@ function CreateVenue() {
   }
 
   return (
-    <main>
+    <main className={styles.main}>
       <h2>Create Venue</h2>
 
       <form onSubmit={handleSubmit}>
