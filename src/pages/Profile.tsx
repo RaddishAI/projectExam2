@@ -13,6 +13,8 @@ import styles from "./Profile.module.css";
  */
 function Profile() {
   const user = getUser();
+  const userName = user?.name;
+  const isVenueManager = user?.venueManager;
 
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar?.url ?? "");
   const [avatarAlt, setAvatarAlt] = useState(user?.avatar?.alt ?? "");
@@ -25,7 +27,7 @@ function Profile() {
 
   useEffect(() => {
     async function loadBookings() {
-      if (!user) {
+      if (!userName) {
         setBookingsLoading(false);
         return;
       }
@@ -39,7 +41,7 @@ function Profile() {
       }
 
       try {
-        const result = await getProfileBookings(user.name, accessToken);
+        const result = await getProfileBookings(userName, accessToken);
         setBookings(result);
       } catch (error) {
         setBookingsError(
@@ -51,11 +53,11 @@ function Profile() {
     }
 
     loadBookings();
-  }, [user?.name]);
+  }, [userName]);
 
   useEffect(() => {
     async function loadManagedVenues() {
-      if (!user?.venueManager) {
+      if (!userName || !isVenueManager) {
         return;
       }
 
@@ -71,7 +73,7 @@ function Profile() {
       setManagedVenuesLoading(true);
 
       try {
-        const result = await getProfileVenues(user.name, accessToken);
+        const result = await getProfileVenues(userName, accessToken);
         setManagedVenues(result);
       } catch (error) {
         setManagedVenuesError(
@@ -85,7 +87,7 @@ function Profile() {
     }
 
     loadManagedVenues();
-  }, [user?.name, user?.venueManager]);
+  }, [userName, isVenueManager]);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
