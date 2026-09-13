@@ -9,12 +9,14 @@ const VENUES_PER_PAGE = 12;
 function Home() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [visibleVenues, setVisibleVenues] = useState(VENUES_PER_PAGE);
 
   useEffect(() => {
     async function loadVenues() {
       setLoading(true);
+      setError("");
       setVisibleVenues(VENUES_PER_PAGE);
 
       try {
@@ -24,7 +26,9 @@ function Home() {
 
         setVenues(data);
       } catch (error) {
-        console.error(error);
+        setError(
+          error instanceof Error ? error.message : "Failed to load venues",
+        );
       } finally {
         setLoading(false);
       }
@@ -55,6 +59,8 @@ function Home() {
         <p role="status" aria-live="polite">
           Loading venues...
         </p>
+      ) : error ? (
+        <p role="alert">{error}</p>
       ) : venues.length === 0 ? (
         <p role="status" aria-live="polite">
           No venues found.

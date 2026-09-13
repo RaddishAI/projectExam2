@@ -13,6 +13,7 @@ function VenueDetails() {
 
   const [venue, setVenue] = useState<Venue | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
@@ -23,11 +24,16 @@ function VenueDetails() {
     }
 
     async function loadVenue() {
+      setLoading(true);
+      setError("");
+
       try {
         const data = await getVenueById(id as string);
         setVenue(data);
       } catch (error) {
-        console.error(error);
+        setError(
+          error instanceof Error ? error.message : "Failed to load venue",
+        );
       } finally {
         setLoading(false);
       }
@@ -64,6 +70,14 @@ function VenueDetails() {
         <p role="status" aria-live="polite">
           Loading venue...
         </p>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main>
+        <p role="alert">{error}</p>
       </main>
     );
   }
