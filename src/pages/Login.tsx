@@ -13,14 +13,21 @@ function Login() {
     email: "",
     password: "",
   });
+
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    setMessage("");
 
     try {
+      setSubmitting(true);
+
       const response = await login({
-        email: formData.email,
+        email: formData.email.trim(),
         password: formData.password,
       });
 
@@ -29,7 +36,9 @@ function Login() {
       saveAuth(accessToken, user);
       navigate("/");
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Login failed");
+      setMessage(error instanceof Error ? error.message : "Login failed");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -51,6 +60,7 @@ function Login() {
                 email: event.target.value,
               })
             }
+            required
           />
         </div>
 
@@ -67,10 +77,15 @@ function Login() {
                 password: event.target.value,
               })
             }
+            required
           />
         </div>
 
-        <button type="submit">Login</button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Logging in..." : "Login"}
+        </button>
+
+        {message && <p role="status">{message}</p>}
       </form>
     </main>
   );

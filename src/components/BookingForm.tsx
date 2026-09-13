@@ -28,6 +28,7 @@ function BookingForm({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setMessage("");
 
     const accessToken = getAccessToken();
 
@@ -46,9 +47,13 @@ function BookingForm({
       return;
     }
 
+    if (guests < 1 || guests > maxGuests) {
+      setMessage(`Guests must be between 1 and ${maxGuests}.`);
+      return;
+    }
+
     try {
       setSubmitting(true);
-      setMessage("");
 
       await createBooking(
         {
@@ -118,7 +123,7 @@ function BookingForm({
           {submitting ? "Booking..." : "Book now"}
         </button>
 
-        {message && <p>{message}</p>}
+        {message && <p role="status">{message}</p>}
       </form>
     </section>
   );

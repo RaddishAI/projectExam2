@@ -18,6 +18,9 @@ function Profile() {
 
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar?.url ?? "");
   const [avatarAlt, setAvatarAlt] = useState(user?.avatar?.alt ?? "");
+  const [avatarMessage, setAvatarMessage] = useState("");
+  const [avatarSubmitting, setAvatarSubmitting] = useState(false);
+
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [bookingsLoading, setBookingsLoading] = useState(true);
   const [bookingsError, setBookingsError] = useState("");
@@ -91,34 +94,46 @@ function Profile() {
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    setAvatarMessage("");
 
     if (!user) {
+      return;
+    }
+
+    if (!avatarUrl.trim()) {
+      setAvatarMessage("Avatar URL is required.");
       return;
     }
 
     const accessToken = getAccessToken();
 
     if (!accessToken) {
-      alert("You must be logged in to update your avatar.");
+      setAvatarMessage("You must be logged in to update your avatar.");
       return;
     }
 
     try {
+      setAvatarSubmitting(true);
+
       const response = await updateAvatar(
         user.name,
         {
           avatar: {
-            url: avatarUrl,
-            alt: avatarAlt,
+            url: avatarUrl.trim(),
+            alt: avatarAlt.trim(),
           },
         },
         accessToken,
       );
 
       saveAuth(accessToken, response.data);
-      alert("Avatar updated successfully!");
+      setAvatarMessage("Avatar updated successfully!");
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Avatar update failed");
+      setAvatarMessage(
+        error instanceof Error ? error.message : "Avatar update failed",
+      );
+    } finally {
+      setAvatarSubmitting(false);
     }
   }
 
@@ -166,6 +181,7 @@ function Profile() {
             type="url"
             value={avatarUrl}
             onChange={(event) => setAvatarUrl(event.target.value)}
+            required
           />
         </div>
 
@@ -179,7 +195,11 @@ function Profile() {
           />
         </div>
 
-        <button type="submit">Update Avatar</button>
+        <button type="submit" disabled={avatarSubmitting}>
+          {avatarSubmitting ? "Updating avatar..." : "Update Avatar"}
+        </button>
+
+        {avatarMessage && <p role="status">{avatarMessage}</p>}
       </form>
 
       {user.bio && <p>Bio: {user.bio}</p>}
