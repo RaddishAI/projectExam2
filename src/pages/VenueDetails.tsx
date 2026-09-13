@@ -61,7 +61,9 @@ function VenueDetails() {
   if (loading) {
     return (
       <main>
-        <p>Loading venue...</p>
+        <p role="status" aria-live="polite">
+          Loading venue...
+        </p>
       </main>
     );
   }

@@ -317,7 +317,11 @@ function CreateVenue() {
         </button>
       </form>
 
-      {message && <p role="status">{message}</p>}
+      {message && (
+        <p role="status" aria-live="polite">
+          {message}
+        </p>
+      )}
     </main>
   );
 }

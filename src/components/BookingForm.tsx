@@ -123,7 +123,11 @@ function BookingForm({
           {submitting ? "Booking..." : "Book now"}
         </button>
 
-        {message && <p role="status">{message}</p>}
+        {message && (
+          <p role="status" aria-live="polite">
+            {message}
+          </p>
+        )}
       </form>
     </section>
   );
