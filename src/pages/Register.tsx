@@ -15,20 +15,40 @@ function Register() {
     venueManager: false,
   });
 
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    setMessage("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setMessage("Password must be at least 8 characters.");
+      return;
+    }
 
     try {
+      setSubmitting(true);
+
       await register({
-        name: formData.name,
-        email: formData.email,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
         password: formData.password,
         venueManager: formData.venueManager,
       });
 
-      alert("Account created successfully!");
+      setMessage("Account created successfully!");
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Registration failed");
+      setMessage(
+        error instanceof Error ? error.message : "Registration failed",
+      );
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -50,6 +70,7 @@ function Register() {
                 name: event.target.value,
               })
             }
+            required
           />
         </div>
 
@@ -66,6 +87,7 @@ function Register() {
                 email: event.target.value,
               })
             }
+            required
           />
         </div>
 
@@ -82,6 +104,8 @@ function Register() {
                 password: event.target.value,
               })
             }
+            minLength={8}
+            required
           />
         </div>
 
@@ -98,6 +122,8 @@ function Register() {
                 confirmPassword: event.target.value,
               })
             }
+            minLength={8}
+            required
           />
         </div>
 
@@ -117,7 +143,11 @@ function Register() {
           />
         </div>
 
-        <button type="submit">Create account</button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Creating account..." : "Create account"}
+        </button>
+
+        {message && <p role="status">{message}</p>}
       </form>
     </main>
   );

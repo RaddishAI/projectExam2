@@ -28,12 +28,34 @@ function CreateVenue() {
   const [lng, setLng] = useState(0);
 
   const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+    setMessage("");
 
     if (!user?.venueManager) {
       setMessage("Only venue managers can create venues.");
+      return;
+    }
+
+    if (!name.trim()) {
+      setMessage("Venue name is required.");
+      return;
+    }
+
+    if (!description.trim()) {
+      setMessage("Description is required.");
+      return;
+    }
+
+    if (price < 0) {
+      setMessage("Price cannot be negative.");
+      return;
+    }
+
+    if (maxGuests < 1) {
+      setMessage("Max guests must be at least 1.");
       return;
     }
 
@@ -45,15 +67,17 @@ function CreateVenue() {
     }
 
     try {
+      setSubmitting(true);
+
       await createVenue(
         {
-          name,
-          description,
-          media: mediaUrl
+          name: name.trim(),
+          description: description.trim(),
+          media: mediaUrl.trim()
             ? [
                 {
-                  url: mediaUrl,
-                  alt: mediaAlt,
+                  url: mediaUrl.trim(),
+                  alt: mediaAlt.trim(),
                 },
               ]
             : [],
@@ -66,11 +90,11 @@ function CreateVenue() {
             pets,
           },
           location: {
-            address: address || null,
-            city: city || null,
-            zip: zip || null,
-            country: country || null,
-            continent: continent || null,
+            address: address.trim() || null,
+            city: city.trim() || null,
+            zip: zip.trim() || null,
+            country: country.trim() || null,
+            continent: continent.trim() || null,
             lat,
             lng,
           },
@@ -83,6 +107,8 @@ function CreateVenue() {
       setMessage(
         error instanceof Error ? error.message : "Failed to create venue",
       );
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -286,10 +312,12 @@ function CreateVenue() {
           />
         </div>
 
-        <button type="submit">Create Venue</button>
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Creating venue..." : "Create Venue"}
+        </button>
       </form>
 
-      {message && <p>{message}</p>}
+      {message && <p role="status">{message}</p>}
     </main>
   );
 }
