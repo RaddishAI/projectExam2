@@ -211,9 +211,13 @@ function Profile() {
       <section>
         <h3>Upcoming Bookings</h3>
 
-        {bookingsLoading && <p>Loading bookings...</p>}
+        {bookingsLoading && (
+          <p role="status" aria-live="polite">
+            Loading bookings...
+          </p>
+        )}
 
-        {bookingsError && <p>{bookingsError}</p>}
+        {bookingsError && <p role="alert">{bookingsError}</p>}
 
         {!bookingsLoading &&
           !bookingsError &&
@@ -246,9 +250,13 @@ function Profile() {
         <section>
           <h3>Managed Venues</h3>
 
-          {managedVenuesLoading && <p>Loading managed venues...</p>}
+          {managedVenuesLoading && (
+            <p role="status" aria-live="polite">
+              Loading managed venues...
+            </p>
+          )}
 
-          {managedVenuesError && <p>{managedVenuesError}</p>}
+          {managedVenuesError && <p role="alert">{managedVenuesError}</p>}
 
           {!managedVenuesLoading &&
             !managedVenuesError &&

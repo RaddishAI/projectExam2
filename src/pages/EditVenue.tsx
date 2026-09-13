@@ -218,7 +218,9 @@ function EditVenue() {
   if (loading) {
     return (
       <main className={styles.main}>
-        <p>Loading venue...</p>
+        <p role="status" aria-live="polite">
+          Loading venue...
+        </p>
       </main>
     );
   }
