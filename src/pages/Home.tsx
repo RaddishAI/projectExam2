@@ -52,9 +52,13 @@ function Home() {
       </label>
 
       {loading ? (
-        <p>Loading venues...</p>
+        <p role="status" aria-live="polite">
+          Loading venues...
+        </p>
       ) : venues.length === 0 ? (
-        <p>No venues found.</p>
+        <p role="status" aria-live="polite">
+          No venues found.
+        </p>
       ) : (
         <>
           <div className={styles.venueGrid}>

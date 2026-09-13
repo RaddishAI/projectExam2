@@ -33,3 +33,11 @@ input,
 textarea {
   font: inherit;
 }
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 3px;
+}

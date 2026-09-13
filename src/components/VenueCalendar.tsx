@@ -34,6 +34,15 @@ function VenueCalendar({
     return `${year}-${month}-${day}`;
   }
 
+  function formatAccessibleDate(date: Date) {
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
   function isDateBooked(date: Date) {
     return bookings.some((booking) => {
       const dateFrom = new Date(booking.dateFrom);
@@ -76,7 +85,9 @@ function VenueCalendar({
   const calendarDays = [];
 
   for (let i = 0; i < startDay; i++) {
-    calendarDays.push(<div key={`empty-${i}`} className={styles.emptyDay} />);
+    calendarDays.push(
+      <div key={`empty-${i}`} className={styles.emptyDay} aria-hidden="true" />,
+    );
   }
 
   for (let day = 1; day <= daysInMonth; day++) {
@@ -84,6 +95,7 @@ function VenueCalendar({
     const booked = isDateBooked(date);
     const selected = isDateSelected(date);
     const formattedDate = formatDate(date);
+    const accessibleDate = formatAccessibleDate(date);
 
     calendarDays.push(
       <button
@@ -94,6 +106,8 @@ function VenueCalendar({
         className={`${styles.day} ${
           booked ? styles.booked : styles.available
         } ${selected ? styles.selected : ""}`}
+        aria-label={`${accessibleDate}, ${booked ? "booked" : "available"}`}
+        aria-pressed={selected}
       >
         {day}
       </button>,
@@ -110,18 +124,22 @@ function VenueCalendar({
       <h2>Availability</h2>
 
       <div className={styles.calendarHeader}>
-        <button type="button" onClick={handlePreviousMonth}>
+        <button
+          type="button"
+          onClick={handlePreviousMonth}
+          aria-label="Previous month"
+        >
           ←
         </button>
 
         <h3>{monthName}</h3>
 
-        <button type="button" onClick={handleNextMonth}>
+        <button type="button" onClick={handleNextMonth} aria-label="Next month">
           →
         </button>
       </div>
 
-      <div className={styles.weekdays}>
+      <div className={styles.weekdays} aria-hidden="true">
         <span>Mon</span>
         <span>Tue</span>
         <span>Wed</span>
@@ -135,12 +153,18 @@ function VenueCalendar({
 
       <div className={styles.legend}>
         <span>
-          <span className={`${styles.legendBox} ${styles.available}`} />
+          <span
+            className={`${styles.legendBox} ${styles.available}`}
+            aria-hidden="true"
+          />
           Available
         </span>
 
         <span>
-          <span className={`${styles.legendBox} ${styles.booked}`} />
+          <span
+            className={`${styles.legendBox} ${styles.booked}`}
+            aria-hidden="true"
+          />
           Booked
         </span>
       </div>

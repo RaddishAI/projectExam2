@@ -199,7 +199,11 @@ function Profile() {
           {avatarSubmitting ? "Updating avatar..." : "Update Avatar"}
         </button>
 
-        {avatarMessage && <p role="status">{avatarMessage}</p>}
+        {avatarMessage && (
+          <p role="status" aria-live="polite">
+            {avatarMessage}
+          </p>
+        )}
       </form>
 
       {user.bio && <p>Bio: {user.bio}</p>}

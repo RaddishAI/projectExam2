@@ -18,7 +18,7 @@ function Header() {
           Holidaze
         </Link>
 
-        <nav>
+        <nav aria-label="Primary navigation">
           {user ? (
             <>
               <Link to="/profile">Profile</Link>
